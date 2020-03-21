@@ -3,7 +3,7 @@ import * as THREE from "three";
 import { Geometry } from "three";
 
 export type IDiceValues = {
-  dice: DiceObject<any, any>;
+  dice: DiceObject<number[]>;
   value: number;
 };
 
@@ -135,7 +135,7 @@ type IMaterialOptions = {
   shading: THREE.Shading;
 };
 
-class DiceObject<TVertices extends number[], TFaces extends number[]> {
+export class DiceObject<TFaces extends number[]> {
   size: number;
   invertUpside: boolean;
   materialOptions: IMaterialOptions;
@@ -152,7 +152,7 @@ class DiceObject<TVertices extends number[], TFaces extends number[]> {
   faceTexts: string[];
   chamfer: number;
 
-  vertices: TVertices[];
+  vertices: [number, number, number][];
   faces: TFaces[];
 
   object: THREE.Mesh | null;
@@ -166,6 +166,8 @@ class DiceObject<TVertices extends number[], TFaces extends number[]> {
       fontColor: "#000000",
       backColor: "#ffffff"
     });
+
+    this.world = world;
 
     this.object = null;
     this.size = options.size;
@@ -510,9 +512,6 @@ class DiceObject<TVertices extends number[], TFaces extends number[]> {
   }
 
   create() {
-    if (!this.world)
-      throw new Error("You must call DiceManager.setWorld(world) first.");
-
     this.object = new THREE.Mesh(
       this.getGeometry(),
       new THREE.MultiMaterial(this.getMaterials())
@@ -555,10 +554,7 @@ class DiceObject<TVertices extends number[], TFaces extends number[]> {
   updateMaterialsForValue(diceValue) {}
 }
 
-export class DiceD4 extends DiceObject<
-  [number, number, number],
-  [number, number, number, number]
-> {
+export class DiceD4 extends DiceObject<[number, number, number, number]> {
   d4FaceTexts: [
     [
       [],
@@ -662,7 +658,6 @@ export class DiceD4 extends DiceObject<
 }
 
 export class DiceD6 extends DiceObject<
-  [number, number, number],
   [number, number, number, number, number]
 > {
   constructor(options: IDiceOptions, world: CANNON.World) {
@@ -723,10 +718,7 @@ export class DiceD6 extends DiceObject<
   }
 }
 
-export class DiceD8 extends DiceObject<
-  [number, number, number],
-  [number, number, number, number]
-> {
+export class DiceD8 extends DiceObject<[number, number, number, number]> {
   constructor(options: IDiceOptions, world: CANNON.World) {
     super(options, world);
 
@@ -785,10 +777,7 @@ export class DiceD8 extends DiceObject<
   }
 }
 
-export class DiceD10 extends DiceObject<
-  [number, number, number],
-  [number, number, number, number]
-> {
+export class DiceD10 extends DiceObject<[number, number, number, number]> {
   constructor(options: IDiceOptions, world: CANNON.World) {
     super(options, world);
 
@@ -860,7 +849,6 @@ export class DiceD10 extends DiceObject<
 }
 
 export class DiceD12 extends DiceObject<
-  [number, number, number],
   [number, number, number, number, number, number]
 > {
   constructor(options: IDiceOptions, world: CANNON.World) {
@@ -942,10 +930,7 @@ export class DiceD12 extends DiceObject<
   }
 }
 
-export class DiceD20 extends DiceObject<
-  [number, number, number],
-  [number, number, number, number]
-> {
+export class DiceD20 extends DiceObject<[number, number, number, number]> {
   constructor(options: IDiceOptions, world: CANNON.World) {
     super(options, world);
 
